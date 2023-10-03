@@ -6,6 +6,7 @@ use std::cmp::Ordering;
 use std::sync::{Arc, Mutex};
 use std::time::SystemTime;
 
+
 static NAV: [(&'static str, &'static str); 6] = [
     ("/", "Home"),
     ("/mapbuilder", "Map Builder"),
@@ -18,6 +19,7 @@ static NAV: [(&'static str, &'static str); 6] = [
 pub static COLOURS: [&'static str; 10] = [
     "#808080", "#FF8000", "#0080ff", "#FF6693", "#3fcb55", "#cbc33f", "#cf40e9", "#FF3F0D", "#1beef0", "#0DC5FF"
 ];
+
 
 /// The state of a player, in a running game.
 /// This represents actual players or connection keys.

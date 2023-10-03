@@ -180,7 +180,7 @@ export class Shader {
     uniform: T,
   ) {
     this.bind(gl);
-    const location = this.getUniformLocation(gl, name);
+    const location : any = this.getUniformLocation(gl, name);
     if (location < 0) {
       console.error("No location found with name " + name);
     }

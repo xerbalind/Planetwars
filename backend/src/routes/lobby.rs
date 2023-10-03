@@ -1,9 +1,11 @@
 use crate::planetwars::{self, FinishedState};
 use crate::util::*;
 
+use mozaic::modules::game::Manager;
+use rocket::request::{self, Request, FromRequest};
 use rocket::{Route, State};
-use rocket_contrib::json::Json;
-use rocket_contrib::templates::Template;
+use rocket::serde::json::Json;
+use rocket_dyn_templates::Template;
 
 use mozaic::modules::types::*;
 use mozaic::modules::{game, StepLock};
@@ -40,8 +42,8 @@ struct GameRes {
 /// Standard get function for the lobby tab
 #[get("/lobby")]
 async fn get_lobby(
-    gm: State<'_, game::Manager>,
-    state: State<'_, Games>,
+    gm: &State<game::Manager>,
+    state: &State<Games>,
 ) -> Result<Template, String> {
     let maps = get_maps().await?;
     let games = get_states(&state.get_games(), &gm).await?;
@@ -52,8 +54,8 @@ async fn get_lobby(
 /// The lobby get's this automatically on load and on refresh.
 #[get("/partial/state")]
 async fn state_get(
-    gm: State<'_, game::Manager>,
-    state: State<'_, Games>,
+    gm: &State<game::Manager>,
+    state: &State<Games>,
 ) -> Result<Template, String> {
     let games = get_states(&state.get_games(), &gm).await?;
     let context = Context::new_with(
@@ -72,9 +74,9 @@ async fn state_get(
 #[post("/lobby", data = "<game_req>")]
 async fn post_game(
     game_req: Json<GameReq>,
-    tp: State<'_, ThreadPool>,
-    gm: State<'_, game::Manager>,
-    state: State<'_, Games>,
+    tp: &State<ThreadPool>,
+    gm: &State<game::Manager>,
+    state: &State<Games>,
 ) -> Result<Json<GameRes>, String> {
     let game = build_builder(
         tp.inner().clone(),

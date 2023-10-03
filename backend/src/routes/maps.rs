@@ -1,8 +1,8 @@
 use serde::Deserialize;
 
 use rocket::Route;
-use rocket_contrib::json::Json;
-use rocket_contrib::templates::Template;
+use rocket::serde::json::Json;
+use rocket_dyn_templates::Template;
 
 use async_std::fs;
 use async_std::io::ReadExt;

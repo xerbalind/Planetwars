@@ -1,4 +1,4 @@
-#![feature(proc_macro_hygiene, async_closure, decl_macro)]
+// #![feature(proc_macro_hygiene, async_closure, decl_macro)]
 
 extern crate serde;
 #[macro_use]
@@ -19,12 +19,11 @@ extern crate tracing_subscriber;
 
 #[macro_use]
 extern crate rocket;
-extern crate rocket_contrib;
 
 #[macro_use]
 extern crate educe;
 
-use figment::{providers::{Serialized, Env}};
+use figment::providers::{Serialized, Env};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
 use std::net::SocketAddr;
@@ -43,9 +42,9 @@ mod util;
 use util::Games;
 use util::COLOURS;
 
-use rocket::fairing::AdHoc;
-use rocket_contrib::templates::tera::{self, Value};
-use rocket_contrib::templates::{Engines, Template};
+use rocket::{fairing::AdHoc, Build};
+use rocket_dyn_templates::tera::{self, Value};
+use rocket_dyn_templates::{Template,Engines};
 
 use std::collections::HashMap;
 
@@ -115,7 +114,7 @@ fn get_host_name(host_name: &str) -> impl Fn(&HashMap<String, Value>) -> tera::R
 
 /// Async main function, starting logger, graph and rocket
 #[rocket::launch]
-async fn rocket() -> rocket::Rocket {
+async fn rocket() -> rocket::Rocket<Build> {
     let fut = graph::set_default();
 
     let sub = FmtSubscriber::builder()
@@ -142,7 +141,7 @@ async fn rocket() -> rocket::Rocket {
         .manage(Games::new())
         .attach(AdHoc::config::<PWConfig>())    // Manage the config
         .mount("/", routes)
-        .attach(AdHoc::on_attach("Assets Config", async move |rocket| {
+        .attach(AdHoc::on_ignite("Assets Config", |rocket| async move {
             let pw_config = rocket.figment().extract::<PWConfig>().unwrap_or_default();
             println!("PW Config {:?}", pw_config);
             let host_name = pw_config.host_name.clone();
@@ -153,7 +152,7 @@ async fn rocket() -> rocket::Rocket {
                 engines.tera.register_function("get_host_name", get_host_name(&host_name));
             });
 
-            Ok(rocket.attach(tera))
+            rocket.attach(tera)
         }))
 }
 

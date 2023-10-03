@@ -1,7 +1,7 @@
 use rocket::response::Redirect;
 use rocket::Route;
 
-use rocket_contrib::templates::Template;
+use rocket_dyn_templates::Template;
 
 use crate::util::*;
 

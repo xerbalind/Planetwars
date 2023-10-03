@@ -1,9 +1,9 @@
 use crate::planetwars::FinishedState;
 use crate::util::*;
 
-use rocket::response::NamedFile;
+use rocket::fs::NamedFile;
 use rocket::Route;
-use rocket_contrib::templates::Template;
+use rocket_dyn_templates::Template;
 
 use async_std::fs;
 use async_std::io::BufReader;

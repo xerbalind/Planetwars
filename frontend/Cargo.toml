@@ -5,7 +5,8 @@ authors = ["ajuvercr <arthur.vercruysse@ugent.be>"]
 edition = "2018"
 
 [package.metadata.wasm-pack.profile.release]
-wasm-opt = ["-Oz", "--enable-mutable-globals"]
+# wasm-opt = ["-Oz", "--enable-mutable-globals"]
+wasm-opt = false
 
 [lib]
 crate-type = ["cdylib", "rlib"]
